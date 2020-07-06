@@ -18,6 +18,8 @@
  ---
  SDN для домохозяек или как собрать виртуальную лабораторию при помощи OpenDaylight, Postman и Vrnetlab
  ---
+ Автоматизируем сети или как собрать виртуальную лабораторию при помощи OpenDaylight, Postman и Vrnetlab
+ ---
 ![](https://habrastorage.org/webt/mm/ee/mu/mmeemunxzfcaodkl5ro0x7_mr-w.png)
 
 В этой статье я расскажу, как настроить *OpenDaylight* для работы с сетевым оборудованием, а также покажу, как с помощью *Postman* и простых *RESTCONF* запросов этим оборудованием можно управлять. Работать с железом мы не будем, а вместо этого развернем небольшую виртуальную лабораторию из одного-единственного роутера с помощью *Vrnetlab* поверх *Ubuntu 20.04 LTS*.
@@ -36,10 +38,10 @@
 ## Необходимые знания
 Для того, чтобы статья не превратилась в простыню, некоторые технические подробности я опустил (со ссылками на литературу, где про них можно почитать).
 В связи с чем, предлагаю вам темы, которые хорошо бы (но почти не обязательно) знать перед прочтением:
-- NETCONF (RFC 6241), RESTCONF (RFC 8040)
-- XML / JSON
-- YANG (RFC 6020 + RFC 7950)
-- Базовое понимание Docker'a
+- [NETCONF](https://habr.com/ru/post/135259/), [RESTCONF](https://tools.ietf.org/html/rfc8040)
+- [XML](https://habr.com/ru/company/mailru/blog/475474/) / [JSON](https://gist.github.com/ermakovpetr/4c9f56d48e49d822705a)
+- [YANG](https://tools.ietf.org/html/rfc6020)
+- [Базовое понимание Docker'a](https://habr.com/ru/post/346634/)
 
 ## Часть 1: немного теории
 ![](https://habrastorage.org/webt/o7/vr/bp/o7vrbpyvgsueqrvfrozuipc5hxy.png)
@@ -49,7 +51,7 @@
 - Использует YANG модели для автоматического создания RESTCONF API сетевых устройств
 
 Основной модуль для управления сетью. Именно через него мы будем общаться с подключенными устройствами. Управляется через свой собственный API. 
-Более подробно про OpenDaylight можно прочитать [здесь](https://www.opendaylight.org/what-we-do/odl-platform-overview)
+Более подробно про OpenDaylight можно прочитать [здесь](https://www.opendaylight.org/what-we-do/odl-platform-overview).
 
 ![](https://habrastorage.org/webt/sg/cq/gs/sgcqgsqsybafjfkwab74prftt7s.png)
 - Инструмент для тестирования API
@@ -69,7 +71,7 @@
 
 ## Часть 2: лабораторная работа
 В рамках этого туториала мы будем настраиваить следующую систему:
-![](https://habrastorage.org/webt/7k/kk/j-/7kkkj-fuyty6eyjkjj-qwx3s8oe.png)
+![](https://habrastorage.org/webt/cj/ad/eu/cjadeubfejqrbohczcgypggqots.png)
 #### Как это работает 
 - *Juniper vMX* поднимается в *Docker* контейнере (средствами *Vrnetlab*) и функционирует как самый обычный виртуальный роутер.
 - *ODL* подключен к роутеру и позволяет управлять им.
@@ -97,7 +99,7 @@ sudo apt install default-jdk
 ````
 feature:install odl-netconf-topology odl-restconf-all
 ````
-На этом простейшая настройка *ODL* завершена. (Более подробно можно прочитать [здесь](https://docs.opendaylight.org/en/stable-magnesium/getting-started-guide/installing_opendaylight.html))
+На этом простейшая настройка *ODL* завершена. (Более подробно можно прочитать [здесь](https://docs.opendaylight.org/en/stable-magnesium/getting-started-guide/installing_opendaylight.html)).
 
 ## Часть 4: настраиваем Vrnetlab
 ![](https://habrastorage.org/webt/dw/4j/mf/dw4jmfbsvwaa_8cda7-yayf5nys.png)
@@ -140,7 +142,7 @@ ci-builder-image    makefile.include          vmx               xrv
 common              nxos                      vqfx              xrv9k
 ````
 #### Создаем image роутера
-Каждый роутер, который поддерживается *Vrnetlab*, имеет свою уникальную процедуру настройки. В случае *Juniper vMX* нам достаточно закинуть .tgz архив с роутером (скачать его можно с офиального сайта](https://support.juniper.net/support/downloads/?p=vmx#sw)) в директорию vmx и выполнить команду `make`:
+Каждый роутер, который поддерживается *Vrnetlab*, имеет свою уникальную процедуру настройки. В случае *Juniper vMX* нам достаточно закинуть .tgz архив с роутером (скачать его можно с [официального сайта](https://support.juniper.net/support/downloads/?p=vmx#sw)) в директорию vmx и выполнить команду `make`:
 ````
 ubuntu:~$ cd ~/vrnetlab/vmx
 ubuntu:~$ # Копируем в эту директорию .tgz архив с роутером
@@ -148,10 +150,12 @@ ubuntu:~$ sudo make
 ````
 Сборка образа *vMX* займет порядка 10-20 минут. Самое время сходить заварить кофе! 
 
-Почему же так долго, спросите вы? Перевод [ответа](https://github.com/plajjan/vrnetlab/tree/master/vmx) автора на этот вопрос:
+
+<spoiler title="Почему же так долго, спросите вы?">
+Перевод [ответа](https://github.com/plajjan/vrnetlab/tree/master/vmx) автора на этот вопрос:
 
 "Это связано с тем, что при первом запуске VCP (Control Plane) считывает файл конфигурации, который определяет, будет ли он работать в качестве VRR VCP в vMX. Ранее этот запуск выполнялся во время запуска Docker, но это означало, что VCP всегда перезапускался один раз, прежде чем виртуальный маршрутизатор становился доступным, что приводило к длительному времени загрузки (около 5 минут). Теперь первый запуск VCP выполняется во время сборки образа Docker, и поскольку сборка Docker не может быть запущена с параметром --privileged, это означает, что qemu работает без аппаратного ускорения KVM и, таким образом, сборка занимает очень много времени. Во время этого процесса выводится много логов, так что, по крайней мере, вы сможете увидеть, что происходит. Я думаю, что длительная сборка не так страшна, потому что образ мы создаем один раз, а запускаем множество."
- 
+ </spoiler>
 После  можно будет увидеть image нашего роутера в *Docker*:
 ````
 ubuntu:~$ sudo docker image list
@@ -224,19 +228,16 @@ PUT http://10.132.1.202:8181/restconf/config/network-topology:network-topology/t
 Наш запрос сформирован. Отправляем. Если все было настроено правильно, то нам должен вернуться статус "201 Created":
 ![](https://habrastorage.org/webt/k0/xy/z3/k0xyz3gaeqyfgprvsp-47o7pv7c.png)
 
-#### Что делает этот запрос?
+<spoiler title="Что делает этот запрос?">
 Мы создаем node внутри ODL с параметрами реального роутера, к которому мы хотим получить доступ.
 ````
 xmlns="urn:TBD:params:xml:ns:yang:network-topology"
-````
-и
-````
 xmlns="urn:opendaylight:netconf-node-topology"
 ````
 Это внутренние пространства имен XML (XML namespace) для ODL в соответствии с которыми он создает node.
-Соответственно, имя роутера - это node-id, адрес роутера - host и тд. Самая интересная строчка - последняя. 
-
-Schema-cache-directory создает директорию, в которую выкачиваются все файлы YANG Schema подключенного роутера. Найти ее можно в `$ODL_ROOT/cache/jun01_cache`. 
+Далее, соответственно, имя роутера - это node-id, адрес роутера - host и тд. 
+Самая интересная строчка - последняя. Schema-cache-directory создает директорию, в которую выкачиваются все файлы YANG Schema подключенного роутера. Найти их можно в `$ODL_ROOT/cache/jun01_cache`. 
+</spoiler>
 
 #### Проверяем подключение роутера
 Создадим __GET__ запрос:
@@ -302,7 +303,7 @@ POST http://10.132.1.202:8181/restconf/config/network-topology:network-topology/
 
 После отправки должны получить статус "204 No Content"
 
-Чтобы проверить, что конфигурация изменилась, можно воспользоваться предыдущим запросом. Но для примера мы создадим еще один, который выведет нам информацию только о сконфигурированных на роутере протоколах: 
+Чтобы проверить, что конфигурация изменилась, можно воспользоваться предыдущим запросом. Но для примера мы создадим еще один, который выведет нам информацию только о сконфигурированных на роутере протоколах. 
 Создадим __GET__ запрос:
 1.    Строка запроса:
 ````
@@ -367,6 +368,116 @@ DELETE http://10.132.1.202:8181/restconf/config/network-topology:network-topolog
 После отправки получим следующий результат (Используя __GET__ запрос):
 ![](https://habrastorage.org/webt/5_/r-/me/5_r-mepekyu2maifbhahfcyebrw.png)
 
+## Часть 7: Добавляем Cisco xRV9000
+Что мы все о Джунипере, да о Джунипере? Давайте о Cisco поговорим! 
+У меня нашелся xRV9000 версии 7.0.2 (зверюга, которому нужны 8Gb RAM и 4 ядра) - его и запустим.
+#### Запуск контейнера
+Процесс создания Docker контейнера практически ничем не отличается от Juniper. Аналогично, закидываем .qcow2 файл с роутером в директорию, соответствующую его названию, (в данном случае xrv9k) и выполняем команду `make docker-image`.
+Через несколько минут видим, что образ создался:
+````
+ubuntu:~$ sudo docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+vrnetlab/vr-xrv9k   7.0.2               54debc7973fc        4 hours ago         1.7GB
+vrnetlab/vr-vmx     20.1R1.11           b1b2369b453c        4 weeks ago         4.43GB
+debian              stretch             614bb74b620e        7 weeks ago         101MB
+````
+Производим запуск контейнера:
+````
+ubuntu:~$ sudo docker run -d --privileged --name xrv01 54debc7973fc
+````
+Через некоторое время смотрим, что контейнер запустился
+````
+ubuntu:~$ sudo docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                 PORTS                                                      NAMES
+058c5ecddae3        54debc7973fc        "/launch.py"        4 hours ago         Up 4 hours (healthy)   22/tcp, 830/tcp, 5000-5003/tcp, 10000-10099/tcp, 161/udp   xrv01
+````
+Подключаемся по ssh:
+````
+ubuntu@ubuntu:~$ ssh vrnetlab@172.17.0.2
+Password:
+
+
+RP/0/RP0/CPU0:ios#show version
+Mon Jul  6 12:19:28.036 UTC
+Cisco IOS XR Software, Version 7.0.2
+Copyright (c) 2013-2020 by Cisco Systems, Inc.
+
+Build Information:
+ Built By     : ahoang
+ Built On     : Fri Mar 13 22:27:54 PDT 2020
+ Built Host   : iox-ucs-029
+ Workspace    : /auto/srcarchive15/prod/7.0.2/xrv9k/ws
+ Version      : 7.0.2
+ Location     : /opt/cisco/XR/packages/
+ Label        : 7.0.2
+
+cisco IOS-XRv 9000 () processor
+System uptime is 3 hours 22 minutes
+````
+#### Подключаем роутер к OpenDaylight
+Добавление происходит совершенно аналогичным с vMX образом. Нужно только названия поменять.
+___PUT___ запрос:
+![](https://habrastorage.org/webt/i2/cc/ug/i2ccuguu8o6n_aicbznq6g3l2p8.png)
+
+Через некоторое время вызываем ___GET___ запрос, чтобы проверить, что все подключилось:
+![](https://habrastorage.org/webt/dk/eg/zj/dkegzjm9orfrwfhfe9l8o7sz9f4.png)
+
+#### Изменяем конфигурацию
+Настроим следующую конфигурацию:
+````
+!
+router ospf LAB
+ mpls ldp auto-config
+!
+````
+Создадим POST запрос:
+1.    Строка запроса:
+````
+POST http://10.132.1.202:8181/restconf/config/network-topology:network-topology/topology/topology-netconf/node/xrv01/yang-ext:mount/Cisco-IOS-XR-ipv4-ospf-cfg:ospf
+````
+2.    Тело запроса (вкладка Body):
+````json
+{
+    "processes": {
+        "process": [
+            {
+                "process-name": "LAB",
+                "default-vrf": {
+                    "process-scope": {
+                        "ldp-auto-config": [
+                            null
+                        ]
+                    }
+                }
+            }
+        ]
+    }
+}
+````
+3.    На вкладке Authorization необходимо выставить параметр `Basic Auth` и логин/пароль: admin/admin.
+4.    На вкладке Headers необходимо добавить два заголовка:
+- Accept application/json
+- Content-Type application/json
+
+После его выполнения должны получить статус "204 No Content"
+Проверим, что у нас получилось. 
+Для этого создадим ___GET___ запрос:
+1.    Строка запроса:
+````
+GET http://10.132.1.202:8181/restconf/config/network-topology:network-topology/topology/topology-netconf/node/xrv01/yang-ext:mount/Cisco-IOS-XR-ipv4-ospf-cfg:ospf
+````
+2.    На вкладке Authorization необходимо выставить параметр `Basic Auth` и логин/пароль: admin/admin.
+
+После выполнения должны увидеть следующее:
+![](https://habrastorage.org/webt/ed/j3/lp/edj3lpulnqcbm0cyit5j1to1lyi.png)
+
+Для удаления конфигурации используем __DELETE__:
+1.    Строка запроса:
+````
+DELETE http://10.132.1.202:8181/restconf/config/network-topology:network-topology/topology/topology-netconf/node/xrv01/yang-ext:mount/Cisco-IOS-XR-ipv4-ospf-cfg:ospf
+````
+2.    На вкладке Authorization необходимо выставить параметр `Basic Auth` и логин/пароль: admin/admin.
+
 ## Заключение
 Данный туториал даёт простейшие примеры того, как можно взаимодействовать с сетевым оборудованием при помощи OpenDaylight. Без сомнения, запросы из приведенных примеров можно сделать сильно сложнее и настраивать целые сервисы одним кликом мыши - все ограничено только вашей фантазией*. 
 
@@ -378,5 +489,4 @@ ___!!!ЕСЛИ ХОТИТЕ ПОЙТИ ДАЛЬШЕ!!!___
 3.    Network Programmability with YANG / Benoît Claise, Loe Clarke, Jan Lindblad
 4.    Learning XML, Second Edition / Erik T. Ray 
 5.    Effective DevOps / Jennifer Davis, Ryn Daniels
-
 

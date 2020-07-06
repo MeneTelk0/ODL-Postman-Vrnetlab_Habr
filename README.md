@@ -459,7 +459,8 @@ POST http://10.132.1.202:8181/restconf/config/network-topology:network-topology/
 - Accept application/json
 - Content-Type application/json
 
-После его выполнения должны получить статус "204 No Content"
+После его выполнения должны получить статус "204 No Content".
+
 Проверим, что у нас получилось. 
 Для этого создадим ___GET___ запрос:
 1.    Строка запроса:

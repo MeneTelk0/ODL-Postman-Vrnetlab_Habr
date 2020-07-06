@@ -329,9 +329,10 @@ DELETE http://10.132.1.202:8181/restconf/config/network-topology:network-topolog
 Данный туториал даёт простейшие примеры того, как можно взаимодействовать с сетевым оборудованием при помощи OpenDaylight. Без сомнения, запросы из приведенных примеров можно сделать сильно сложнее и настраивать целые сервисы одним кликом мыши - все ограничено только вашей фантазией*. 
 
 ## Список литературы
-1.    OpenDaylight Cookbook / Mathieu Lemay, Alexis de Talhouet, Et al
-2.    Network Programmability with YANG / Benoît Claise, Loe Clarke, Jan Lindblad
-3.    Learning XML, Second Edition / Erik T. Ray 
-4.    Effective DevOps / Jennifer Davis, Ryn Daniels
+1.    [Vrnetlab: Emulate networks using KVM and Docker](https://www.brianlinkletter.com/vrnetlab-emulate-networks-using-kvm-and-docker/) / Brian Linkletter
+2.    OpenDaylight Cookbook / Mathieu Lemay, Alexis de Talhouet, Et al
+3.    Network Programmability with YANG / Benoît Claise, Loe Clarke, Jan Lindblad
+4.    Learning XML, Second Edition / Erik T. Ray 
+5.    Effective DevOps / Jennifer Davis, Ryn Daniels
 
 

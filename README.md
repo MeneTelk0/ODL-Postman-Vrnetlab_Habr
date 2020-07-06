@@ -69,7 +69,7 @@
 - Поддерживает: Cisco XRv, Juniper vMX, Arista vEOS, Nokia VSR и др.
 - Open Source
 
-Очень интересный, но малоизвестный инструмент. В нашем случае с его помощью мы запустим Juniper vMX на обычной Ubuntu 20.04 LTS. 
+Очень интересный, но малоизвестный инструмент. В нашем случае с его помощью мы запустим Juniper vMX и Cisco xRV9000 на обычной Ubuntu 20.04 LTS. 
 Прочитать подробнее о нем можно на [странице проекта](https://github.com/plajjan/vrnetlab).
 
 
@@ -82,7 +82,7 @@
 - *Postman* запущен на отдельной машине и через него мы отправляем команды *ODL*: на подключение/удаление роутера, изменение конфигурации и тп.
 
 ##### Комментарий к устройству системы
-*Juniper vMX* и *ODL* требуют довольно много ресурсов для своей стабильной работы. Один только *vMX* просит 6 Gb оперативной памяти и 4 ядра. Поэтому было принято решение вынести всех "тяжеловесов" на отдельную машину (*Heulett Packard Enterprise MicroServer ProLiant Gen8, Ubuntu 20.04 LTS*). Роутер, конечно, на ней не "летает", но для небольших экспериментов производительности достаточно.
+*Juniper vMX* и *ODL* требуют довольно много ресурсов для своей стабильной работы. Один только *vMX* просит 6 Gb оперативной памяти и 4 ядра. Поэтому было принято решение вынести всех "тяжеловесов" на отдельную машину (*Heulett Packard Enterprise MicroServer ProLiant Gen8, Ubuntu 20.04 LTS*). Роутер, конечно, на ней не "летает", но для небольших экспериментов производительности хватает.
 
 ## Часть 3: настраиваем OpenDaylight
 ![](https://habrastorage.org/webt/x_/e1/be/x_e1beuyefiadpvdhusg1uvdiga.png)
@@ -90,7 +90,7 @@
 *Актуальная версия ODL на момент написания статьи - Magnesium SR1*
 1) Устанавливаем *Java OpenJDK 11* (за более подробной установкой [сюда](https://linuxize.com/post/install-java-on-ubuntu-18-04/))
 ````
-sudo apt install default-jdk
+ubuntu:~$ sudo apt install default-jdk
 ````
 2) Находим и скачиваем свежую сборку *ODL* [отсюда](http://www.opendaylight.org/software/downloads)
 3) Разархивируем скачанный архив
@@ -101,7 +101,7 @@ sudo apt install default-jdk
 
 Далее устанавливаем *ODL Features*, предназначенные для работы с протоколами *NETCONF* и *RESTCONF*. Для этого в консоли *ODL* выполняем:
 ````
-feature:install odl-netconf-topology odl-restconf-all
+opendaylight-user@root> feature:install odl-netconf-topology odl-restconf-all
 ````
 На этом простейшая настройка *ODL* завершена. (Более подробно можно прочитать [здесь](https://docs.opendaylight.org/en/stable-magnesium/getting-started-guide/installing_opendaylight.html)).
 
@@ -125,7 +125,7 @@ ubuntu:~$ sudo apt update
 ubuntu:~$ sudo apt install -y docker-ce docker-ce-cli containerd.io
 ````
 #### Установка Vrnetlab
-Для установки *Vrnetlab* клонируем соответствующий репозиторий с github.com:
+Для установки *Vrnetlab* клонируем соответствующий репозиторий с github:
 ````
 ubuntu:~$ cd ~
 ubuntu:~$ git clone https://github.com/plajjan/vrnetlab.git
@@ -134,7 +134,7 @@ ubuntu:~$ git clone https://github.com/plajjan/vrnetlab.git
 ````
 ubuntu:~$ cd ~/vrnetlab
 ````
-Здесь можно увидеть все скрипты, неоходимые для запуска. Обратите внимание, что для каждого типа роутера сделана соответсвующая директория:
+Здесь можно увидеть все скрипты, необходимые для запуска. Обратите внимание, что для каждого типа роутера сделана соответствующая директория:
 ````
 ubuntu:~/vrnetlab$ ls
 CODE_OF_CONDUCT.md  config-engine-lite        openwrt           vr-bgp
@@ -198,7 +198,7 @@ Model: vmx
 Junos: 20.1R1.11
 ````
 На этом настройка роутера завершена. 
-Рекомендации по установке для роутеров различных вендоров можно найти на [github проекта](https://github.com/plajjan/vrnetlab) в соответсвующих директориях.
+Рекомендации по установке для роутеров различных вендоров можно найти на [github проекта](https://github.com/plajjan/vrnetlab) в соответствующих директориях.
 
 ## Часть 5: Postman - подключаем роутер к OpenDaylight
 #### Установка Postman 
@@ -233,14 +233,14 @@ PUT http://10.132.1.202:8181/restconf/config/network-topology:network-topology/t
 ![](https://habrastorage.org/webt/k0/xy/z3/k0xyz3gaeqyfgprvsp-47o7pv7c.png)
 
 <spoiler title="Что делает этот запрос?">
-Мы создаем node внутри ODL с параметрами реального роутера, к которому мы хотим получить доступ.
+Мы создаем node внутри *ODL* с параметрами реального роутера, к которому мы хотим получить доступ.
 ````
 xmlns="urn:TBD:params:xml:ns:yang:network-topology"
 xmlns="urn:opendaylight:netconf-node-topology"
 ````
-Это внутренние пространства имен XML (XML namespace) для ODL в соответствии с которыми он создает node.
-Далее, соответственно, имя роутера - это node-id, адрес роутера - host и тд. 
-Самая интересная строчка - последняя. Schema-cache-directory создает директорию, в которую выкачиваются все файлы YANG Schema подключенного роутера. Найти их можно в `$ODL_ROOT/cache/jun01_cache`. 
+Это внутренние пространства имен *XML* (*XML namespace*) для *ODL* в соответствии с которыми он создает node.
+Далее, соответственно, имя роутера - это *node-id*, адрес роутера - *host* и тд. 
+Самая интересная строчка - последняя. *Schema-cache-directory* создает директорию, в которую выкачиваются все файлы *YANG Schema* подключенного роутера. Найти их можно в `$ODL_ROOT/cache/jun01_cache`. 
 </spoiler>
 
 #### Проверяем подключение роутера
@@ -254,7 +254,7 @@ GET http://10.132.1.202:8181/restconf/operational/network-topology:network-topol
 Отправляем. Должны получить статус "200 OK" и список всех поддерживаемых устройством *YANG Schema*:
 ![](https://habrastorage.org/webt/rp/9n/iv/rp9nivb4m4_ukztr-ulfrxiqlao.png)
 
-__Комментарий__: Чтобы увидеть последнее, в моем случае необходимо было подождать порядка 10 минут после выполнения __PUT__, пока все YANG sсhema выгрузятся на ODL. До этого момента при выполнении данного GET запроса будет выведено следующее:
+__Комментарий__: Чтобы увидеть последнее, в моем случае необходимо было подождать порядка 10 минут после выполнения __PUT__, пока все *YANG sсhema* выгрузятся на *ODL*. До этого момента при выполнении данного __GET__ запроса будет выведено следующее:
 ![](https://habrastorage.org/webt/vd/yn/jr/vdynjrtgsycrqvfnwzy0nwdqcm4.png)
 
 #### Удаляем роутер 
@@ -369,7 +369,11 @@ DELETE http://10.132.1.202:8181/restconf/config/network-topology:network-topolog
     }
 }
 ````
-После отправки получим следующий результат (Используя __GET__ запрос):
+Не забудьте поменять на вкладке Headers заголовки на:
+- Accept application/json
+- Content-Type application/json
+
+После отправки получим следующий результат (Ответ смотрим используя __GET__ запрос):
 ![](https://habrastorage.org/webt/5_/r-/me/5_r-mepekyu2maifbhahfcyebrw.png)
 
 ## Часть 7: добавляем Cisco xRV9000
@@ -389,7 +393,7 @@ debian              stretch             614bb74b620e        7 weeks ago         
 ````
 ubuntu:~$ sudo docker run -d --privileged --name xrv01 54debc7973fc
 ````
-Через некоторое время смотрим, что контейнер запустился
+Через некоторое время смотрим, что контейнер запустился:
 ````
 ubuntu:~$ sudo docker ps
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                 PORTS                                                      NAMES

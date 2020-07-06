@@ -1,5 +1,11 @@
-# Руководство по работе с сетевым оборудованием при помощи OpenDaylight, Postman и Vrnetlab
-# Настраиваем виртуальную лабу
+ Руководство по работе с сетевым оборудованием при помощи OpenDaylight, Postman и Vrnetlab
+ Настраиваем виртуальную лабораторию при помощи OpenDaylight, Postman и Vrnetlab
+ Создаем виртуальную лабораторию при помощи OpenDaylight, Postman и Vrnetlab
+ Играем в SDN или как создать свою виртуальную лабораторию при помощи OpenDaylight, Postman и Vrnetlab 
+ Играем в SDN или как создать свою виртуальную лабораторию при помощи OpenDaylight, Postman, Vrnetlab и пары железок
+ Автоматизация сетей или как создать свою виртуальную лабораторию при помощи OpenDaylight, Postman и Vrnetlab
+ Играем в SDN или как собрать виртуальную лабораторию при помощи OpenDaylight, Postman и Vrnetlab на коленке
+ Играем в SDN или как собрать свою виртуальную лабораторию при помощи OpenDaylight, Postman и Vrnetlab
 
 ![](https://habrastorage.org/webt/mm/ee/mu/mmeemunxzfcaodkl5ro0x7_mr-w.png)
 

@@ -1,5 +1,5 @@
 # Руководство по работе с сетевым оборудованием при помощи OpenDaylight, Postman и Vrnetlab
-# Настраиваем виртуальную 
+# Настраиваем виртуальную лабу
 
 ![](https://habrastorage.org/webt/mm/ee/mu/mmeemunxzfcaodkl5ro0x7_mr-w.png)
 
